@@ -2,29 +2,26 @@ package com.h2rd.refactoring.web;
 
 import com.h2rd.refactoring.usermanagement.User;
 import com.h2rd.refactoring.usermanagement.UserDao;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.*;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.springframework.stereotype.Repository;
 
+/* Updated to the correct HTTP request methods */
 @Path("/users")
 @Repository
-public class UserResource{
+public class UserResource {
 
     public UserDao userDao;
 
-    @GET
-    @Path("add/")
+    @POST
+    @Path("/add")
     public Response addUser(@QueryParam("name") String name,
-                            @QueryParam("email") String email,
-                            @QueryParam("role") List<String> roles) {
+            @QueryParam("email") String email,
+            @QueryParam("role") List<String> roles) {
 
         User user = new User();
         user.setName(name);
@@ -39,11 +36,12 @@ public class UserResource{
         return Response.ok().entity(user).build();
     }
 
-    @GET
-    @Path("update/")
+    @PUT
+    @Path("/update")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(@QueryParam("name") String name,
-                               @QueryParam("email") String email,
-                               @QueryParam("role") List<String> roles) {
+            @QueryParam("email") String email,
+            @QueryParam("role") List<String> roles) {
 
         User user = new User();
         user.setName(name);
@@ -58,11 +56,11 @@ public class UserResource{
         return Response.ok().entity(user).build();
     }
 
-    @GET
-    @Path("delete/")
+    @DELETE
+    @Path("/delete")
     public Response deleteUser(@QueryParam("name") String name,
-                               @QueryParam("email") String email,
-                               @QueryParam("role") List<String> roles) {
+            @QueryParam("email") String email,
+            @QueryParam("role") List<String> roles) {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
@@ -77,31 +75,33 @@ public class UserResource{
     }
 
     @GET
-    @Path("find/")
+    @Path("/find")
     public Response getUsers() {
-    	
-        ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
-    		"classpath:/application-config.xml"	
-    	});
-    	userDao = context.getBean(UserDao.class);
-    	List<User> users = userDao.getUsers();
-    	if (users == null) {
-    		users = new ArrayList<User>();
-    	}
 
-        GenericEntity<List<User>> usersEntity = new GenericEntity<List<User>>(users) {};
+        if (userDao == null) {
+            userDao = UserDao.getUserDao();
+        }
+        List<User> users = userDao.getUsers();
+        if (users == null) {
+            users = new ArrayList<User>();
+        }
+
+        GenericEntity<List<User>> usersEntity = new GenericEntity<List<User>>(users) {
+        };
         return Response.status(200).entity(usersEntity).build();
     }
 
+    /* changed the parameter to email */
     @GET
-    @Path("search/")
-    public Response findUser(@QueryParam("name") String name) {
+    @Path("/search")
+    public Response findUser(@QueryParam("email") String email) {
 
         if (userDao == null) {
             userDao = UserDao.getUserDao();
         }
 
-        User user = userDao.findUser(name);
+        User user = userDao.findUser(email);
         return Response.ok().entity(user).build();
+
     }
 }

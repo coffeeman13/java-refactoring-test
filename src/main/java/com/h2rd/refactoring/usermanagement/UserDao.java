@@ -1,7 +1,11 @@
 package com.h2rd.refactoring.usermanagement;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
+/* Since email is the unique identifier,
+* changed all comparisons to user's name instead of name
+ */
 public class UserDao {
 
     public ArrayList<User> users;
@@ -15,11 +19,21 @@ public class UserDao {
         return userDao;
     }
 
-    public void saveUser(User user) {
+    public boolean saveUser(User user) {
         if (users == null) {
             users = new ArrayList<User>();
         }
-        users.add(user);
+
+        /* a simple check to see if a user has at least
+        one role
+         */
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            System.out.println("User should have at least one role");
+            return false;
+        } else {
+            users.add(user);
+            return true;
+        }
     }
 
     public ArrayList<User> getUsers() {
@@ -33,9 +47,12 @@ public class UserDao {
 
     public void deleteUser(User userToDelete) {
         try {
-            for (User user : users) {
-                if (user.getName() == userToDelete.getName()) {
-                    users.remove(user);
+
+            /* changed the code to handle ConcurrentModificationException */
+            for (Iterator<User> itr = users.iterator(); itr.hasNext();) {
+                User user = itr.next();
+                if (user.getEmail().equals(userToDelete.getEmail())) {
+                    itr.remove();
                 }
             }
         } catch (Exception e) {
@@ -43,11 +60,14 @@ public class UserDao {
         }
     }
 
+    /* since user's email is now the basis for comparison,
+     * user's name will be modified instead
+     */
     public void updateUser(User userToUpdate) {
         try {
             for (User user : users) {
-                if (user.getName() == userToUpdate.getName()) {
-                    user.setEmail(userToUpdate.getEmail());
+                if (user.getEmail().equals(userToUpdate.getEmail())) {
+                    user.setName(userToUpdate.getName());
                     user.setRoles(userToUpdate.getRoles());
                 }
             }
@@ -56,10 +76,11 @@ public class UserDao {
         }
     }
 
-    public User findUser(String name) {
+    /* changed the parameter to user's email */
+    public User findUser(String email) {
         try {
             for (User user : users) {
-                if (user.getName() == name) {
+                if (user.getEmail().equals(email)) {
                     return user;
                 }
             }
@@ -68,4 +89,5 @@ public class UserDao {
         }
         return null;
     }
+
 }

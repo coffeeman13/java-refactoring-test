@@ -25,26 +25,24 @@ Feel free to modify whatever you want! :)
 Pre-reqs
 --------
 
-* The first thing you need is to have a github or gitlab account. If you don't have it yet, you can create it on [github website][2] or [gitlab website][3].
-
-* This repo uses GIT as SCM. If you don't have it you need to install it on your machine. You can choose between installing a [command line version][4] or a  [graphical tool][5] to manage it.
-
 * To build this project you must install Maven. If you do not have it installed, please refer to the [maven website][1] for assistance.
 
-* For deployment you can use any web container/application server you want. We used tomcat version 7.0.26 to validate if the application was starting up correctly.
+* For deployment you can use any web container/application server you want. We used tomcat version 8.5.x to validate if the application was starting up correctly.
 
 Instructions
 ------------
 
-1. Fork this repo using the github/gitlab website.
-1. Clone your new forked repo from github/gitlab.
 1. At the project root directory, run:
     `$ mvn package`
-1. At this point the maven build should run successfully and every test should be green.
-1. Perform the refactoring you deem necessary, following what you know to be the best practices. (feel free to innovate!).
-1. Please make sure your code compiles and that all tests are green when you are done.
-1. At the end of your work you should push the code to your forked repo but you should **NOT** do a pull request.
-1. The final step is to send an email to your contact at the company informing him/her that you finished the test including the **public** Git Repo URL where the code changes can be found.
+2. At this point the maven build should run successfully and every test should be green.
+3. Put your project on a **private** repository on Github (GIT repo)
+4. Create a new branch from your master branch
+5. Perform the refactoring you deem necessary in the branch, following what you know to be the best practices. (Feel free to innovate!).
+6. Please make sure your code compiles and that all tests are green when you are done.
+7. At the end of your work you should push the code into your branch.
+8. Create a Pull Request from your branch to the master branch.
+9. Add the "jahlonsou" user as a collaborator for your private git repo.
+10. The final step is to send an email to Jasmin and Marc informing them that you finished the test including the Pull Request's URL where the code changes can be found.
 
 Business Requirements
 ---------------------
